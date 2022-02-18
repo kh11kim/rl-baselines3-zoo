@@ -29,6 +29,7 @@ except ImportError:
     gym_donkeycar = None
 
 try:
-    import panda_gym  # pytype: disable=import-error
+    pass
+    #import panda_gym  # pytype: disable=import-error
 except ImportError:
     panda_gym = None

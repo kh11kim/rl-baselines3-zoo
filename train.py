@@ -15,6 +15,7 @@ import utils.import_envs  # noqa: F401 pytype: disable=import-error
 from utils.exp_manager import ExperimentManager
 from utils.utils import ALGOS, StoreDict
 import utils.rxbot.rxbot_reach
+import utils.rxbot.panda_reach
 
 seaborn.set()
 

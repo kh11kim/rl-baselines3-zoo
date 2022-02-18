@@ -3,13 +3,13 @@ import gym
 import numpy as np
 from gym.envs.registration import register
 
-from .rxbot import RxbotAbstractEnv
+from .franka_panda import PandaAbstractEnv
 
-class RxbotReachEnv(RxbotAbstractEnv, gym.GoalEnv):
+class PandaReachEnv(PandaAbstractEnv, gym.GoalEnv):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, render=False, dim=2, reward_type="task", random_init=True, task_ll=[0,-1,0], task_ul=[1,1,1], joint_range=2*np.pi):
-        super().__init__(render=render, dim=dim, task_ll=task_ll, task_ul=task_ul, joint_range=joint_range)
+    def __init__(self, render=False, reward_type="task", random_init=True, task_ll=[0,-1,0], task_ul=[1,1,1]):
+        super().__init__(render=render, task_ll=task_ll, task_ul=task_ul)
         self.reward_type = reward_type
         self.random_init = random_init
         
@@ -85,7 +85,7 @@ class RxbotReachEnv(RxbotAbstractEnv, gym.GoalEnv):
             r -= np.linalg.norm(desired_goal - achieved_goal, axis=-1)
             #test
             mask_goal = np.linalg.norm(desired_goal - achieved_goal, axis=-1) < self.eps
-            r -= np.linalg.norm(actions, axis=-1) / 10
+            r -= np.linalg.norm(actions, axis=-1) / 5
         elif self.reward_type == "joint":
             r -= np.linalg.norm(desired_goal - achieved_goal, axis=-1)
             mask1 = np.linalg.norm(desired_goal - achieved_goal, axis=-1) >= self.eps
@@ -98,7 +98,7 @@ class RxbotReachEnv(RxbotAbstractEnv, gym.GoalEnv):
         
 
 register(
-    id='RxbotReach-v0',
-    entry_point='utils.rxbot.rxbot_reach:RxbotReachEnv',
+    id='PandaReach-v0',
+    entry_point='utils.rxbot.panda_reach:PandaReachEnv',
     max_episode_steps=50,
 )

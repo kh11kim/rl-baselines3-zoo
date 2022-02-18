@@ -5,39 +5,36 @@ from .assets import *
 from .bullet import Bullet
 from .bullet_robot import BulletRobot
 
-class Rxbot(BulletRobot):
-    def __init__(self, sim:Bullet, dim=2, joint_range=2*np.pi):
-        name = "r{}bot".format(dim)
-        path = get_data_path() + f"/r{dim}.urdf"
-        joint_idxs = np.array(range(dim))
-        joint_ll = -np.ones(dim) * joint_range / 2
-        joint_ul = np.ones(dim) * joint_range / 2
+class Panda(BulletRobot):
+    def __init__(self, sim:Bullet):
+        name = "panda"
+        path = get_data_path() + f"/franka_description/franka_panda.urdf"
+        joint_idxs = np.array([0, 1, 2, 3, 4, 5, 6])
+        # joint_ll = -np.ones(dim) * joint_range / 2
+        # joint_ul = np.ones(dim) * joint_range / 2
         action_space = spaces.Box(-1.0, 1.0, shape=(len(joint_idxs),), dtype=np.float32)
-        super(Rxbot, self).__init__(
+        super(Panda, self).__init__(
             sim, 
             name, 
             path, 
             joint_idxs,
-            action_space, 
-            joint_ll=joint_ll, 
-            joint_ul=joint_ul, 
+            action_space,
+            ee_idx=10 
         )
         self.max_joint_change = 0.2 
-        
 
-class RxbotAbstractEnv:
-    def __init__(self, render=False, dim=4, task_ll=[-1,-1,0], task_ul=[1,1,1], joint_range=2*np.pi):
+class PandaAbstractEnv:
+    def __init__(self, render=False, task_ll=[-1,-1,0], task_ul=[1,1,1]):
         self.is_render = render
-        self.dim = dim
 
         # parameters
-        #self.task_range = 2
+        #self.eps = 0.05
 
         self.sim = Bullet(
             render=self.is_render, 
             background_color=np.array([153, 255, 153])
         )
-        self.robot = Rxbot(self.sim, dim=dim, joint_range=joint_range)
+        self.robot = Panda(self.sim)
         self.task_ll = np.array(task_ll)
         self.task_ul = np.array(task_ul)
         self.observation_space = spaces.Dict(dict(
@@ -55,7 +52,7 @@ class RxbotAbstractEnv:
         self.sim.create_table(length=0.7, width=0.7, height=0.4, x_offset=0)
         self.sim.place_visualizer(
             target_position=np.zeros(3), 
-            distance=0.9, 
+            distance=1.6, 
             yaw=45, 
             pitch=-30
         )

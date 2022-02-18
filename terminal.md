@@ -7,9 +7,16 @@ python scripts/all_plots.py -a tqc --env RxbotReach-v0 -f rl-trained-agents/
 
 # train
 python train.py --algo sac --env RxbotReach-v0 --env-kwargs render:False 
-python train.py --algo sac --env RxbotReach-v0 --env-kwargs render:False task_ll:[-1,-1,0] task_ul:[1,1,1] joint_range:6.28
+python train.py --algo sac --env RxbotReach-v0 -n 20000 --env-kwargs render:False reward_type:'task' task_ll:[-1,-1,0] task_ul:[1,1,1] joint_range:np.pi*6/4
+python train.py --algo sac --env RxbotReach-v0 -n 30000 --env-kwargs dim:4 render:False reward_type:'task' task_ll:[-1,-1,0] task_ul:[1,1,1] joint_range:np.pi*6/4
 
+python train.py --algo sac --env PandaReach-v0 -n 1000000 --env-kwargs render:False reward_type:'task' task_ll:[-1,-1,0] task_ul:[1,1,1]
 
-python enjoy.py --algo sac --env RxbotReach-v0 --folder rl-trained-agents/ -n 5000 --exp-id 3 --env-kwargs render:True task_ll:[-1,-1,0] task_ul:[1,1,1] joint_range:np.pi*2
+# enjoy
+python enjoy.py --algo sac --env RxbotReach-v0 --folder rl-trained-agents/ -n 5000 --exp-id 11 --env-kwargs render:True task_ll:[-1,-1,0] task_ul:[1,1,1] joint_range:np.pi*6/4
+python enjoy.py --algo sac --env RxbotReach-v0 --folder rl-trained-agents/ -n 5000 --exp-id 12 --env-kwargs render:True 
+python enjoy.py --algo sac --env PandaReach-v0 --folder rl-trained-agents/ -n 5000 --exp-id 1 --env-kwargs render:True task_ll:[-1,-1,0] task_ul:[1,1,1] 
+
+python enjoy.py --algo sac --env RxbotReach-v0 --folder rl-trained-agents/ -n 5000 --exp-id 15 --env-kwargs dim:4 render:True task_ll:[-1,-1,0] task_ul:[1,1,1] joint_range:np.pi*6/4
 
 python enjoy.py --algo tqc --env RxbotReach-v0 --folder rl-trained-agents/ -n 5000 --env-kwargs render:True --load-best

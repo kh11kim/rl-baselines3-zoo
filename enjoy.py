@@ -14,6 +14,7 @@ from utils import ALGOS, create_test_env, get_latest_run_id, get_saved_hyperpara
 from utils.exp_manager import ExperimentManager
 from utils.utils import StoreDict
 import utils.rxbot.rxbot_reach
+import utils.rxbot.panda_reach
 
 
 def main():  # noqa: C901
