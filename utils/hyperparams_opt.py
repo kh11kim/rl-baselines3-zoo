@@ -236,12 +236,12 @@ def sample_sac_params(trial: optuna.Trial) -> Dict[str, Any]:
     # activation_fn = trial.suggest_categorical('activation_fn', [nn.Tanh, nn.ReLU, nn.ELU, nn.LeakyReLU])
 
     net_arch = {
-        "small": [64, 64],
-        "medium": [256, 256],
+        # "small": [64, 64],
+        # "medium": [256, 256],
         "big": [400, 300],
         # Uncomment for tuning HER
-        # "large": [256, 256, 256],
-        # "verybig": [512, 512, 512],
+        "large": [256, 256, 256],
+        "verybig": [512, 512, 512],
     }[net_arch]
 
     target_entropy = "auto"

@@ -93,7 +93,7 @@ class PandaReachEnv(PandaAbstractEnv, gym.GoalEnv):
             r -= np.linalg.norm(desired_goal - achieved_goal, axis=-1)
         if "action" in self.reward_type:
             #mask_goal = np.linalg.norm(desired_goal - achieved_goal, axis=-1) < self.eps
-            r -= np.linalg.norm(actions, axis=-1) / 5
+            r -= np.linalg.norm(actions, axis=-1) / 10
         if "joint" in self.reward_type:
             #mask1 = np.linalg.norm(desired_goal - achieved_goal, axis=-1) >= 0.5 #self.eps*2
             #mask2 = np.linalg.norm(goal_joints - joints, axis=-1) > np.pi
