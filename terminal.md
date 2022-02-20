@@ -17,10 +17,18 @@ python train.py --algo sac --env PandaReach-v0 -n 1000000 --env-kwargs render:Fa
 python train.py --algo sac --env PandaReach-v0 -n 1000000 --env-kwargs render:False reward_type:"'taskcol'" task_ll:[-1,-1,0] task_ul:[1,1,1] --save-replay-buffer
 
 python train.py --algo sac --env PandaReach-v0 -n 1000000 --env-kwargs render:False reward_type:"'taskcoljoint'" task_ll:[-1,-1,0] task_ul:[1,1,1] --save-replay-buffer
+python train.py --algo tqc --env PandaReach-v0 -n 1000000 --env-kwargs render:False reward_type:"'taskcol'" task_ll:[-1,-1,0] task_ul:[1,1,1] --save-replay-buffer
+python train.py --algo tqc --env PandaReach-v0 -n 2000000 --env-kwargs render:False reward_type:"'taskcoljoint'" task_ll:[-1,-1,0] task_ul:[1,1,1] --save-replay-buffer
+python train.py --algo tqc --env PandaReach-v0 -n 2000000 --env-kwargs render:False reward_type:"'taskcolaction'" task_ll:[-1,-1,0] task_ul:[1,1,1] --save-replay-buffer
+# hyperparam tuning
+python train.py --algo sac --env PandaReach-v0 -n 50000 -optimize --n-trials 1000 --n-jobs 2 --sampler tpe --pruner median
+
 # enjoy
 python enjoy.py --algo sac --env RxbotReach-v0 --folder rl-trained-agents/ -n 5000 --exp-id 11 --env-kwargs render:True task_ll:[-1,-1,0] task_ul:[1,1,1] joint_range:np.pi*6/4
 python enjoy.py --algo sac --env RxbotReach-v0 --folder rl-trained-agents/ -n 5000 --exp-id 12 --env-kwargs render:True 
 python enjoy.py --algo sac --env PandaReach-v0 --folder rl-trained-agents/ -n 5000 --exp-id 1 --env-kwargs render:True task_ll:[-1,-1,0] task_ul:[1,1,1] 
+python enjoy.py --algo tqc --env PandaReach-v0 --folder rl-trained-agents/ -n 5000 --exp-id 3 --env-kwargs render:True task_ll:[-1,-1,0] task_ul:[1,1,1] 
+python enjoy.py --algo tqc --env PandaReach-v0 --folder rl-trained-agents/ -n 5000 --exp-id 4 --env-kwargs render:True task_ll:[-1,-1,0] task_ul:[1,1,1] 
 
 python enjoy.py --algo sac --env RxbotReach-v0 --folder rl-trained-agents/ -n 5000 --exp-id 15 --env-kwargs dim:4 render:True task_ll:[-1,-1,0] task_ul:[1,1,1] joint_range:np.pi*6/4
 
