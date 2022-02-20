@@ -8,6 +8,7 @@ import numpy as np
 import pybullet as p
 import pybullet_data
 import pybullet_utils.bullet_client as bc
+from spatial_math_mini import SE3, SO3
 from .assets import *
 
 class Bullet:
@@ -666,5 +667,98 @@ class Bullet:
             )    
         self.set_base_pose(name, pos, np.array([0.0, 0.0, 0.0, 1.0]))
 
+    def view_frame(self, name, pos, orn):
+        if not name in self._bodies_idx:
+            self._bodies_idx[name] = self._make_axes()
+        x_orn = SO3.Ry(90, "deg")
+        y_orn = SO3.Rx(-90, "deg")
+        z_orn = SO3()
+        orientation = SO3(np.array([orn[-1], *orn[:3]]))
+        axis_orn = [x_orn, y_orn, z_orn]
+        for i, idx in enumerate(self._bodies_idx[name]):
+            orn_ = (orientation@axis_orn[i]).to_qtn()
+            orn_ = [*orn_[1:], orn_[0]]
+            self.physics_client.resetBasePositionAndOrientation(
+                bodyUniqueId=idx, posObj=pos, ornObj=orn_
+            )
 
-        
+    def _make_axes(self):
+        length = 0.5
+        radius = length/12
+        visualFramePosition = [0,0,length/2]
+        r, g, b = np.eye(3)
+        orns = [
+            [0, 0.7071, 0, 0.7071],
+            [-0.7071, 0, 0, 0.7071],
+            [0,0,0,1]
+        ]
+        a = 0.9
+        shape_ids = []
+        for color in [r, g, b]:
+            shape_ids.append(
+                self.physics_client.createVisualShape(
+                    shapeType=self.physics_client.GEOM_CYLINDER,
+                    radius=radius,
+                    length=length,
+                    visualFramePosition=visualFramePosition,
+                    rgbaColor=[*color, a],
+                    specularColor=[0., 0., 0.]
+                )
+            )
+        axes_id = []
+        for orn, shape in zip(orns, shape_ids):
+            axes_id.append(
+                self.physics_client.createMultiBody(
+                    baseVisualShapeIndex=shape,
+                    baseCollisionShapeIndex=-1,
+                    baseMass=0.,
+                    basePosition=[0,0,0],
+                    baseOrientation=orn
+                )
+            )
+        return axes_id
+
+    # def _make_frame(self, pos, ori, color=None):
+    #     """show the debugging purpose 3-axis frame using pos/ori information
+    #     :param pos [array-like(3)]: The position of the frame
+    #     :param ori [array-like(4)]: The orientation of the frame
+    #     :param color: specific color, defaults to None
+    #     :return [list]: object ids
+    #     """
+    #     T = SE3.qtn_trans(ori, pos).T
+    #     length = 0.1
+    #     xaxis = np.array([length, 0, 0, 1])
+    #     yaxis = np.array([0, length, 0, 1])
+    #     zaxis = np.array([0, 0, length, 1])
+    #     T_axis = np.array([xaxis, yaxis, zaxis]).T
+    #     axes = T @ T_axis
+    #     orig = T[:3,-1]
+    #     xaxis = axes[:-1,0]
+    #     yaxis = axes[:-1,1]
+    #     zaxis = axes[:-1,2]
+    #     if color == "r":
+    #         x_color = y_color = z_color = [1,0,0]
+    #     elif color == "g":
+    #         x_color = y_color = z_color = [0,1,0]
+    #     elif color == "b":
+    #         x_color = y_color = z_color = [0,0,1]
+    #     elif color == "k":
+    #         x_color = y_color = z_color = [0,0,0]
+    #     else:
+    #         x_color = [1,0,0]
+    #         y_color = [0,1,0]
+    #         z_color = [0,0,1]
+    #         self.create_sphere(
+    #             body_name=name,
+    #             radius=0.02,
+    #             mass=0.0,
+    #             ghost=True,
+    #             position=np.zeros(3),
+    #             rgba_color=np.array([1, 0., 0.1, 0.3]),
+    #         )    
+    #     self.create_cylinder("x1", 0.01, 0.0, ghost=True, position )
+    #     x = p.addUserDebugLine(orig, xaxis, lineColorRGB=x_color, lineWidth=5)
+    #     y = p.addUserDebugLine(orig, yaxis, lineColorRGB=y_color, lineWidth=5)
+    #     z = p.addUserDebugLine(orig, zaxis, lineColorRGB=z_color, lineWidth=5)
+    #     pose_id = [x, y, z]
+    #     return pose_id

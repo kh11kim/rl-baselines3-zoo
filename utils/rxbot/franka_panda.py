@@ -27,9 +27,6 @@ class PandaAbstractEnv:
     def __init__(self, render=False, task_ll=[-1,-1,0], task_ul=[1,1,1]):
         self.is_render = render
 
-        # parameters
-        #self.eps = 0.05
-
         self.sim = Bullet(
             render=self.is_render, 
             background_color=np.array([153, 255, 153])
