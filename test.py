@@ -5,6 +5,7 @@
 from utils.rxbot.rxbot_reach import RxbotReachEnv
 from stable_baselines3.common.env_checker import check_env
 from utils.rxbot.franka_panda import Panda, PandaAbstractEnv
+from utils.rxbot.franka_panda_dualarm import PandaDualArm, PandaDualArmAbstractEnv
 from utils.rxbot.panda_reach import PandaReachEnv
 from utils.rxbot.bullet import Bullet
 import numpy as np
@@ -29,6 +30,7 @@ sim.place_visualizer(
 while True:
     sim.step()
 env = gym.make("PandaReach-v0", render=True, reward_type="action")
+#env = gym.make("PandaReach-v0", render=True, reward_type="task")
 
 obs = env.reset()
 rewards = []

@@ -18,6 +18,7 @@ class BulletRobot:
         path, 
         joint_idxs,
         action_space:spaces.Box,
+        base_pos=[0,0,0],
         ee_idx=None,
         joint_ll=None, 
         joint_ul=None,
@@ -35,7 +36,7 @@ class BulletRobot:
         self.sim.loadURDF(
             body_name=self.name,
             fileName=self.path,
-            basePosition=[0,0,0],
+            basePosition=base_pos,
             useFixedBase=True,
         )
         self.joint_info = self.get_joint_info()

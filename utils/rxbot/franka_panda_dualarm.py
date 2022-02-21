@@ -4,35 +4,53 @@ from gym import spaces
 from .assets import *
 from .bullet import Bullet
 from .bullet_robot import BulletRobot
+from .franka_panda import Panda
 
-class Panda(BulletRobot):
-    def __init__(self, sim:Bullet, name="panda", base_pos=[0,0,0]):
-        name = name
-        path = get_data_path() + f"/franka_description/franka_panda.urdf"
-        joint_idxs = np.array([0, 1, 2, 3, 4, 5, 6])
-        # joint_ll = -np.ones(dim) * joint_range / 2
-        # joint_ul = np.ones(dim) * joint_range / 2
-        action_space = spaces.Box(-1.0, 1.0, shape=(len(joint_idxs),), dtype=np.float32)
-        super(Panda, self).__init__(
-            sim, 
-            name, 
-            path, 
-            joint_idxs,
-            action_space,
-            base_pos=base_pos,
-            ee_idx=10 
-        )
-        self.max_joint_change = 0.2 
+class PandaDualArm:
+    def __init__(self, sim:Bullet):
+        #name = "panda_dualarm"
+        self.sim = sim
+        self.panda1 = Panda(self.sim, name="panda1", base_pos=[0,0.2,0])
+        self.panda2 = Panda(self.sim, name="panda2", base_pos=[0,-0.2,0])
+        self.joint_ll = np.hstack([self.panda1.joint_ll, self.panda2.joint_ll])
+        self.joint_ul = np.hstack([self.panda1.joint_ul, self.panda2.joint_ul])
+        self.n_joints = 14
+        self.action_space = spaces.Box(-1.0, 1.0, shape=(self.n_joints,), dtype=np.float32)
+        #self.panda2 = Panda(self.sim, name="panda2")
+        #self.joint_idxs = np.array(range(12))
+    
+    def set_joints(self, joints):
+        #assert len(joints) == len(self.joint_idxs)
+        self.panda1.set_joints(joints[:7])
+        self.panda2.set_joints(joints[7:])
 
-class PandaAbstractEnv:
-    def __init__(self, render=False, task_ll=[-1,-1,0], task_ul=[1,1,1]):
+    def get_joints(self):
+        return np.hstack([self.panda1.get_joints(), self.panda2.get_joints()])
+    
+    def get_random_joints(self, set=False):
+        return np.hstack([self.panda1.get_random_joints(set), self.panda2.get_random_joints(set)])
+    
+    def get_link_pos(self, link):
+        return np.hstack([self.panda1.get_link_pos(), self.panda2.get_link_pos()])
+
+    def get_ee_pos(self):
+        return np.hstack([self.panda1.get_ee_pos(), self.panda2.get_ee_pos()])
+    
+    def set_action(self, action:np.ndarray):
+        self.panda1.set_action(action[:7])
+        self.panda2.set_action(action[7:])
+    
+
+
+class PandaDualArmAbstractEnv:
+    def __init__(self, render=False, task_ll=[-1.5,-1.5,0], task_ul=[1.5,1.5,1]):
         self.is_render = render
 
         self.sim = Bullet(
             render=self.is_render, 
             background_color=np.array([153, 255, 153])
         )
-        self.robot = Panda(self.sim)
+        self.robot = PandaDualArm(self.sim)
         self.task_ll = np.array(task_ll)
         self.task_ul = np.array(task_ul)
         self.observation_space = spaces.Dict(dict(
@@ -47,7 +65,7 @@ class PandaAbstractEnv:
     
     def _make_env(self):
         self.sim.create_plane(z_offset=-0.4)
-        self.sim.create_table(length=0.7, width=0.7, height=0.4, x_offset=0)
+        self.sim.create_table(length=1.0, width=1.0, height=0.4, x_offset=0)
         self.sim.place_visualizer(
             target_position=np.zeros(3), 
             distance=1.6, 
