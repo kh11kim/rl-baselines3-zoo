@@ -44,7 +44,8 @@ class PandaReachEnvPosOrn(PandaAbstractEnv, gym.GoalEnv):
             joints = self.robot.get_random_joints(set=True)
             pos = self.robot.get_ee_pos()
             orn = self.robot.get_ee_orn()
-            if np.all(self.task_ll < pos) & np.all(pos < self.task_ul):
+            posorn = np.hstack([pos,orn])
+            if np.all(self.task_ll < posorn) & np.all(posorn < self.task_ul):
                 return joints, np.hstack([pos, orn])
         raise ValueError("EE position by a random configuration seems not in task-space.")
 
@@ -91,17 +92,29 @@ class PandaReachEnvPosOrn(PandaAbstractEnv, gym.GoalEnv):
             #goal_joints = np.array([i["goal_joints"] for i in info])
             actions = np.array([i["actions"] for i in info])
             collisions = np.array([i["collisions"] for i in info])
+            achieved_goal_pos = achieved_goal[:,:3]
+            achieved_goal_orn = achieved_goal[:,3:]
+            desired_goal_pos = desired_goal[:,:3]
+            desired_goal_orn = desired_goal[:,3:]
         else:
             r = 0
             joints = info["joints"]
             #goal_joints = info["goal_joints"]
             actions = info["actions"]
             collisions = info["collisions"]
+            achieved_goal_pos = achieved_goal[:3]
+            achieved_goal_orn = achieved_goal[3:]
+            desired_goal_pos = desired_goal[:3]
+            desired_goal_orn = desired_goal[3:]
         
         if "pos" in self.reward_type:
-            r -= np.linalg.norm(desired_goal[:3] - achieved_goal[:3], axis=-1)
+            r -= np.linalg.norm(desired_goal_pos - achieved_goal_pos, axis=-1)
         if "orn" in self.reward_type:
-            r -= 1 - np.abs(desired_goal[3:] @ achieved_goal[3:]) / 2
+            if len(achieved_goal.shape) == 2:
+                dot_prod = np.array([desired_goal_orn[i] @ achieved_goal_orn[i] for i in range(len(desired_goal_orn))])
+            else:
+                dot_prod = desired_goal_orn @ achieved_goal_orn
+            r -= 1 - np.abs(dot_prod) / 2
             
         if "action" in self.reward_type:
             #mask_goal = np.linalg.norm(desired_goal - achieved_goal, axis=-1) < self.eps
@@ -109,7 +122,7 @@ class PandaReachEnvPosOrn(PandaAbstractEnv, gym.GoalEnv):
         if "joint" in self.reward_type:
             #mask1 = np.linalg.norm(desired_goal - achieved_goal, axis=-1) >= 0.5 #self.eps*2
             #mask2 = np.linalg.norm(goal_joints - joints, axis=-1) > np.pi
-            r -= np.linalg.norm(joints, axis=-1) / 40
+            r -= np.linalg.norm(joints - self.robot.joint_mid, axis=-1) / 40
         if "col" in self.reward_type:
             r -= collisions * 1.
         return r

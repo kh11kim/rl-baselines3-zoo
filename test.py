@@ -18,7 +18,7 @@ from spatial_math_mini import SE3, SO3
 
 #env = PandaReachEnvPosOrn(render=True, reward_type="orn")
 env = gym.make("PandaReachPosOrn-v0", render=True, reward_type="posorncol")
-
+check_env(env, warn=True)
 obs = env.reset()
 rewards = []
 for i in range(1000):

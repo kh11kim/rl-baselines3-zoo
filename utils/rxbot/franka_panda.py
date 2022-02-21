@@ -31,12 +31,12 @@ class PandaAbstractEnv:
             background_color=np.array([153, 255, 153])
         )
         self.robot = Panda(self.sim)
-        self.task_ll = np.array(task_ll)
-        self.task_ul = np.array(task_ul)
+        self.task_ll = np.hstack([np.array(task_ll), -np.ones(4)])
+        self.task_ul = np.hstack([np.array(task_ul), np.ones(4)])
         self.observation_space = spaces.Dict(dict(
             observation=spaces.Box(self.robot.joint_ll, self.robot.joint_ul, shape=(self.robot.n_joints,), dtype=np.float32),
-            achieved_goal=spaces.Box(self.task_ll, self.task_ul, shape=(3,), dtype=np.float32),
-            desired_goal=spaces.Box(self.task_ll, self.task_ul, shape=(3,), dtype=np.float32),
+            achieved_goal=spaces.Box(self.task_ll, self.task_ul, shape=(7,), dtype=np.float32),
+            desired_goal=spaces.Box(self.task_ll, self.task_ul, shape=(7,), dtype=np.float32),
         ))
         self.action_space = self.robot.action_space
         
