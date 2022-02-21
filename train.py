@@ -16,7 +16,7 @@ from utils.exp_manager import ExperimentManager
 from utils.utils import ALGOS, StoreDict
 import utils.rxbot.rxbot_reach
 import utils.rxbot.panda_reach
-
+from utils.rxbot.panda_reach_posorn import PandaReachEnvPosOrn
 seaborn.set()
 
 if __name__ == "__main__":  # noqa: C901

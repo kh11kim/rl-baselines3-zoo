@@ -20,6 +20,7 @@ python train.py --algo sac --env PandaReach-v0 -n 1000000 --env-kwargs render:Fa
 python train.py --algo tqc --env PandaReach-v0 -n 1000000 --env-kwargs render:False reward_type:"'taskcol'" task_ll:[-1,-1,0] task_ul:[1,1,1] --save-replay-buffer
 python train.py --algo tqc --env PandaReach-v0 -n 2000000 --env-kwargs render:False reward_type:"'taskcoljoint'" task_ll:[-1,-1,0] task_ul:[1,1,1] --save-replay-buffer
 python train.py --algo tqc --env PandaReach-v0 -n 2000000 --env-kwargs render:False reward_type:"'taskcolaction'" task_ll:[-1,-1,0] task_ul:[1,1,1] --save-replay-buffer
+python train.py --algo tqc --env PandaReachPosOrn-v0 -n 1000000 --env-kwargs render:False reward_type:"'posorncol'" task_ll:[-1,-1,0] task_ul:[1,1,1] --save-replay-buffer
 # hyperparam tuning
 python train.py --algo sac --env PandaReach-v0 -n 50000 -optimize --n-trials 1000 --n-jobs 2 --sampler tpe --pruner median
 

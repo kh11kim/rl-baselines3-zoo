@@ -46,6 +46,7 @@ class BulletRobot:
             self.joint_ll = joint_ll
         if joint_ul is not None:
             self.joint_ul = joint_ul
+        self.joint_mid = (self.joint_ul + self.joint_ll)/2
         self.joint_range = self.joint_ul - self.joint_ll
 
     def set_joints(self, joints):
@@ -77,9 +78,15 @@ class BulletRobot:
     
     def get_link_pos(self, link):
         return self.sim.get_link_position(self.name, link)
+    
+    def get_link_orn(self, link):
+        return self.sim.get_link_orientation(self.name, link)
 
     def get_ee_pos(self):
         return self.get_link_pos(self.ee_idx)
+    
+    def get_ee_orn(self):
+        return self.get_link_orn(self.ee_idx)
     
     def set_action(self, action:np.ndarray):
         action = action.copy()

@@ -15,7 +15,7 @@ from utils.exp_manager import ExperimentManager
 from utils.utils import StoreDict
 import utils.rxbot.rxbot_reach
 import utils.rxbot.panda_reach
-
+from utils.rxbot.panda_reach_posorn import PandaReachEnvPosOrn
 
 def main():  # noqa: C901
     parser = argparse.ArgumentParser()

@@ -10,8 +10,6 @@ class Panda(BulletRobot):
         name = name
         path = get_data_path() + f"/franka_description/franka_panda.urdf"
         joint_idxs = np.array([0, 1, 2, 3, 4, 5, 6])
-        # joint_ll = -np.ones(dim) * joint_range / 2
-        # joint_ul = np.ones(dim) * joint_range / 2
         action_space = spaces.Box(-1.0, 1.0, shape=(len(joint_idxs),), dtype=np.float32)
         super(Panda, self).__init__(
             sim, 

@@ -683,7 +683,7 @@ class Bullet:
             )
 
     def _make_axes(self):
-        length = 0.5
+        length = 0.05
         radius = length/12
         visualFramePosition = [0,0,length/2]
         r, g, b = np.eye(3)
@@ -692,7 +692,7 @@ class Bullet:
             [-0.7071, 0, 0, 0.7071],
             [0,0,0,1]
         ]
-        a = 0.9
+        a = 0.8
         shape_ids = []
         for color in [r, g, b]:
             shape_ids.append(
