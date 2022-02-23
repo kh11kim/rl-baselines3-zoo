@@ -8,7 +8,7 @@ from .franka_panda import PandaAbstractEnv
 class PandaReachEnvPosOrn(PandaAbstractEnv, gym.GoalEnv):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, render=False, reward_type="posorn", random_init=True, task_ll=[0,-1,0], task_ul=[1,1,1]):
+    def __init__(self, render=False, reward_type="posorn", random_init=True, task_ll=[0.1,-1,0, -1,-1,-1,-1], task_ul=[1,1,1,1,1,1,1]):
         super().__init__(render=render, task_ll=task_ll, task_ul=task_ul)
         self.reward_type = reward_type
         self.random_init = random_init
@@ -50,14 +50,23 @@ class PandaReachEnvPosOrn(PandaAbstractEnv, gym.GoalEnv):
         raise ValueError("EE position by a random configuration seems not in task-space.")
 
     def reset(self):
+        param = 0.5
         with self.sim.no_rendering():
-            self.goal_joints, self.goal = self.get_random_joint_in_task_space()
-            if self.random_init:
-                self.start_joints, start = self.get_random_joint_in_task_space()
-            else:
-                self.start_joints = self.robot.joint_mid
-                start = np.hstack([self.robot.get_ee_pos(), self.robot.get_ee_orn()])
-            self.robot.set_joints(self.start_joints)
+            for i in range(100):
+                rnd_joints, _ = self.get_random_joint_in_task_space()
+                if self.random_init:
+                    self.start_joints, start = self.get_random_joint_in_task_space()
+                else:
+                    self.start_joints = self.robot.joint_mid
+                    start = np.hstack([self.robot.get_ee_pos(), self.robot.get_ee_orn()])
+                self.goal_joints = self.start_joints + (rnd_joints-self.start_joints) * param
+                self.robot.set_joints(self.goal_joints)
+                self.goal = np.hstack([self.robot.get_ee_pos(), self.robot.get_ee_orn()])
+                self.robot.set_joints(self.start_joints)
+                start_pose_feasible = np.all(self.task_ll < start) & np.all(start < self.task_ul)
+                goal_pose_feasible = np.all(self.task_ll < self.goal) & np.all(self.goal < self.task_ul)
+                if start_pose_feasible & goal_pose_feasible:
+                    break
         
         if self.is_render == True:
             self.sim.view_frame("goal", self.goal[:3], self.goal[3:])

@@ -718,6 +718,17 @@ class Bullet:
             )
         return axes_id
 
+    def get_jacobian(self, name, link, joints):
+        trans, rot = self.physics_client.calculateJacobian(
+            bodyUniqueId=self._bodies_idx[name],
+            linkIndex=link,
+            localPosition=[0,0,0],
+            objPositions=joints.tolist(),
+            objVelocities=np.zeros_like(joints).tolist(),
+            objAccelerations=np.zeros_like(joints).tolist()
+        )
+        return np.vstack([trans, rot])
+
     # def _make_frame(self, pos, ori, color=None):
     #     """show the debugging purpose 3-axis frame using pos/ori information
     #     :param pos [array-like(3)]: The position of the frame

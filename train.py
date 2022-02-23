@@ -17,6 +17,11 @@ from utils.utils import ALGOS, StoreDict
 import utils.rxbot.rxbot_reach
 import utils.rxbot.panda_reach
 from utils.rxbot.panda_reach_posorn import PandaReachEnvPosOrn
+from utils.rxbot.panda_reach_task import PandaReachTaskEnv
+from utils.rxbot.panda_collision import PandaCollisionEnv
+from utils.rxbot.panda_reach_cspace import PandaReachCspaceEnv
+from utils.rxbot.panda_reach_cspace2 import PandaReachCspaceEnv2
+
 seaborn.set()
 
 if __name__ == "__main__":  # noqa: C901

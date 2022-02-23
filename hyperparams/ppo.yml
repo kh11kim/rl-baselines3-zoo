@@ -561,3 +561,46 @@ Walker2d-v3:
   gae_lambda: 0.95
   max_grad_norm: 1
   vf_coef: 0.871923
+
+PandaReachPosOrn-v0:
+  normalize: true
+  n_envs: 8
+  n_timesteps: !!float 1e6
+  policy: 'MultiInputPolicy'
+  batch_size: 64
+  n_steps: 512
+  gamma: 0.99
+  gae_lambda: 0.9
+  n_epochs: 20
+  ent_coef: 0.0
+  sde_sample_freq: 4
+  max_grad_norm: 0.5
+  vf_coef: 0.5
+  learning_rate: !!float 3e-5
+  clip_range: lin_0.4
+  policy_kwargs: "dict(log_std_init=-2.7,
+                       ortho_init=False,
+                       activation_fn=nn.ReLU,
+                       net_arch=[dict(pi=[256, 256], vf=[256, 256])]
+                       )"
+
+PandaReachCspace-v1:
+  normalize: true
+  n_envs: 1
+  policy: 'MlpPolicy'
+  n_timesteps: !!float 1e6
+  batch_size: 128
+  n_steps: 512
+  gamma: 0.99
+  learning_rate: 0.0001
+  ent_coef: 0.000585045
+  clip_range: 0.1
+  n_epochs: 20
+  gae_lambda: 0.95
+  max_grad_norm: 1
+  vf_coef: 0.871923
+  policy_kwargs: "dict(log_std_init=-2,
+                       ortho_init=False,
+                       activation_fn=nn.ReLU,
+                       net_arch=[dict(pi=[256, 256], vf=[256, 256])]
+                       )"

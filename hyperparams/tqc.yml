@@ -303,8 +303,26 @@ PandaReachPosOrn-v0:
   buffer_size: 1000000
   ent_coef: 'auto'
   batch_size: 512
-  gamma: 0.98
+  gamma: 0.99
   learning_rate: 0.001
+  learning_starts: 1000
+  normalize: True
+  replay_buffer_class: HerReplayBuffer
+  replay_buffer_kwargs: "dict(
+    online_sampling=True,
+    goal_selection_strategy='future',
+    n_sampled_goal=4
+  )"
+  policy_kwargs: "dict(net_arch=[512, 512, 512], n_critics=1)"
+
+PandaReachCspace-v0:
+  n_timesteps: !!float 1000000
+  policy: 'MultiInputPolicy'
+  buffer_size: 1000000
+  ent_coef: 'auto'
+  batch_size: 512
+  gamma: 0.98
+  learning_rate: 0.0005
   learning_starts: 1000
   normalize: True
   replay_buffer_class: HerReplayBuffer

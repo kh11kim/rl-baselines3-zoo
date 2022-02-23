@@ -8,21 +8,27 @@ from utils.rxbot.franka_panda import Panda, PandaAbstractEnv
 from utils.rxbot.franka_panda_dualarm import PandaDualArm, PandaDualArmAbstractEnv
 from utils.rxbot.panda_reach_posorn import PandaReachEnvPosOrn
 from utils.rxbot.panda_reach import PandaReachEnv
+from utils.rxbot.panda_reach_task import PandaReachTaskEnv
+from utils.rxbot.panda_reach_cspace import PandaReachCspaceEnv
 from utils.rxbot.bullet import Bullet
 import numpy as np
 from spatial_math_mini import SE3, SO3
+
+import os
+os.environ['KMP_DUPLICATE_LIB_OK']='True'
+
 #sim = Bullet(render=False)
 #p = Panda(sim)
 #env = PandaReachEnv(render=True)
 #env = RxbotReachEnv(render=True, dim=2, reward_type="task")
 
-#env = PandaReachEnvPosOrn(render=True, reward_type="orn")
-env = gym.make("PandaReachPosOrn-v0", render=True, reward_type="posorncol")
-check_env(env, warn=True)
+env = PandaReachCspaceEnv(render=True, reward_type="joint")
+#env = gym.make("PandaReachTask-v0", render=True, reward_type="task")
+#check_env(env, warn=True)
 obs = env.reset()
 rewards = []
 for i in range(1000):
-    obs = env.reset()
+    #obs = env.reset()
     action = env.action_space.sample()
     obs, reward, done, info = env.step(action)
     rewards.append(reward)

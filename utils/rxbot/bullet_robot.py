@@ -88,11 +88,10 @@ class BulletRobot:
     def get_ee_orn(self):
         return self.get_link_orn(self.ee_idx)
     
-    def set_action(self, action:np.ndarray):
-        action = action.copy()
-        action = np.clip(action, self.action_space.low, self.action_space.high)
-        joint_target = self.get_joints() + action * self.max_joint_change
-        joint_target = np.clip(joint_target, self.joint_ll, self.joint_ul) # joint limit
-
-        self.set_joints(joint_target)
+    def get_ee_jacobian(self):
+        joints = self.get_joints()
+        joints = np.hstack([joints, 0, 0]) #add finger
+        jac = self.sim.get_jacobian(self.name, self.ee_idx, joints)
+        return jac[:,:-2] #remove finger
+        
 
