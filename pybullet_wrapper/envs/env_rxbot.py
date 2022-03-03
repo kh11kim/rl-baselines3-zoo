@@ -7,6 +7,7 @@ from ..scene_maker import BulletSceneMaker
 from ..collision_checker import BulletCollisionChecker
 from ..robots import Rxbot
 import pybullet as p
+from spatial_math_mini import *
 
 class RxbotEnvBase:
     def __init__(
@@ -214,10 +215,10 @@ class RxbotGymEnv(RxbotEnvBase, gym.Env):
         if self.checker.is_collision():
             self.robot.set_joint_angles(joint_prev)
             self._collision_flag = True
-            print("collision")
+            #print("collision")
         elif self.is_limit():
             self._collision_flag = True
-            print("limited")
+            #print("limited")
         else:
             self._collision_flag = False
 
@@ -282,8 +283,145 @@ class RxbotGymEnv(RxbotEnvBase, gym.Env):
         
         return r
 
+class RxbotGymPoseEnv(RxbotEnvBase, gym.Env):
+    def __init__(self, render=False, dim=2, reward_type="pose"):
+        self.reward_type = reward_type
+        super().__init__(render=render, dim=dim)
+        self.n_obs = self.robot.n_joints + 3 + 3
+        self.task_ll = np.array([-1.2, -1.2, -1.2, *[-np.pi]*3]) #pos3 + orn9 =12
+        self.task_ul = np.array([1.2, 1.2, 1.2, *[np.pi]*3])
+        self.observation_space = spaces.Dict(dict(
+            observation=spaces.Box(
+                self.robot.joint_ll,
+                self.robot.joint_ul,
+                shape=(self.robot.n_joints,), 
+                dtype=np.float32
+            ),
+            achieved_goal=spaces.Box(
+                self.task_ll, 
+                self.task_ul, 
+                shape=(len(self.task_ll),), 
+                dtype=np.float32
+            ),
+            desired_goal=spaces.Box(
+                self.task_ll, 
+                self.task_ul, 
+                shape=(len(self.task_ll),), 
+                dtype=np.float32
+            ),
+        ))
+        self.action_space = spaces.Box(-1.0, 1.0, shape=(self.robot.n_joints,), dtype=np.float32)
+        self._goal = None
+        self.eps = 0.1
+
+    @property
+    def goal(self):
+        return self._goal.copy()
+    
+    @goal.setter
+    def goal(self, arr: np.ndarray):
+        self._goal = arr
+    
+    def get_observation(self):
+        return dict(
+            observation=self.robot.get_joint_angles(),
+            achieved_goal=np.hstack([self.robot.get_ee_position(), self.get_ee_axisangle()]),
+            desired_goal=self.goal,
+        )
+
+    def set_action(self, action: np.ndarray):
+        joint_prev = self.robot.get_joint_angles()
+        action = action.copy()
+        action = np.clip(action, self.action_space.low, self.action_space.high)
+        joint_target = joint_prev.copy()
+        joint_target += action * self.max_joint_change
+        joint_target = np.clip(joint_target, self.robot.joint_ll, self.robot.joint_ul)
+        self.robot.set_joint_angles(joint_target)
+        if self.checker.is_collision():
+            self.robot.set_joint_angles(joint_prev)
+            self._collision_flag = True
+        elif self.is_limit():
+            self._collision_flag = True
+        else:
+            self._collision_flag = False
+
+    def get_ee_axisangle(self):
+        qtn = self.robot.get_link_orientation(self.robot.ee_idx)
+        axis, angle = SO3.qtn(qtn).to_axisangle()
+        return axis*angle
+
+    def is_success(self, achieved_goal: np.ndarray, desired_goal: np.ndarray):
+        return self.distance(achieved_goal, desired_goal) < self.eps
+
+    def distance(self, achieved_goal, desired_goal):
+        lin_dist = np.linalg.norm(achieved_goal[:3] - desired_goal[:3])
+        angle1, angle2 = np.linalg.norm(achieved_goal[3:]), np.linalg.norm(desired_goal[3:])
+        axis1, axis2 = achieved_goal[3:]/angle1, desired_goal[3:]/angle2
+        _, geodesic = (SO3.axisangle(axis1, angle1).inv() @ SO3.axisangle(axis2, angle2)).to_axisangle()
+        return lin_dist + geodesic * 0.1
+        
+    def reset(self):
+        random_joint1 = self.get_random_configuration(collision_free=True)
+        while True:
+            random_joint2 = self.get_random_configuration(collision_free=False)
+            goal = random_joint1 + (random_joint2 - random_joint1)
+            self.robot.set_joint_angles(goal)
+            if not self.is_collision():
+                goal_pos = self.robot.get_ee_position()
+                goal_orn = self.robot.get_ee_orientation()
+                break
+        self.start = random_joint1
+        self.goal = np.hstack([self.robot.get_ee_position(), self.get_ee_axisangle()])
+        self.robot.set_joint_angles(self.start)
+        start_pos = self.robot.get_ee_position()
+        start_orn = self.robot.get_ee_orientation()
+
+        if self.is_render:
+            self.scene_maker.view_frame("goal", goal_pos, goal_orn)
+            self.scene_maker.view_frame("curr", start_pos, start_orn)
+        return self.get_observation()
+
+    def step(self, action: np.ndarray):
+        self.set_action(action)
+        obs_ = self.get_observation()
+        done = False
+        info = dict(
+            is_success=self.is_success(obs_["achieved_goal"], obs_["desired_goal"]),
+            actions=action.copy(),
+            collisions=self._collision_flag,
+        )
+        reward = self.compute_reward(obs_["achieved_goal"], obs_["desired_goal"], info)
+        if self.is_render:
+            self.scene_maker.view_frame("curr", self.robot.get_ee_position(), self.robot.get_ee_orientation())
+        return obs_, reward, done, info
+
+    def compute_reward(self, achieved_goal, desired_goal, info):
+        if len(achieved_goal.shape) == 2:
+            actions = np.array([i["actions"] for i in info])
+            collisions = np.array([i["collisions"] for i in info])
+        else:
+            actions = info["actions"]
+            collisions = info["collisions"]
+        if "pose" in self.reward_type:
+            r = - self.distance(achieved_goal, desired_goal)
+        if "task" in self.reward_type:
+            r = - np.linalg.norm(achieved_goal[:3] - desired_goal[:3])
+        if "action" in self.reward_type:
+            r -= np.linalg.norm(actions, axis=-1) / 10
+        
+        if "col" in self.reward_type:
+            r -= collisions * 1.
+        
+        return r
+
 register(
     id='RxbotReach-v0',
     entry_point='pybullet_wrapper:RxbotGymEnv',
+    max_episode_steps=100,
+)
+
+register(
+    id='RxbotReach-v1',
+    entry_point='pybullet_wrapper:RxbotGymPoseEnv',
     max_episode_steps=100,
 )

@@ -109,8 +109,10 @@ class BulletRobot:
     def get_ee_orientation(self):
         return self.get_link_orientation(self.ee_idx)
     
+    
+    
     def get_ee_jacobian(self):
-        joints = self.get_joints()
+        joints = self.get_joint_angles()
         joints = np.hstack([joints, 0, 0]) #add finger
         jac = self.bullet.get_jacobian(self.name, self.ee_idx, joints)
         return jac[:,:-2] #remove finger

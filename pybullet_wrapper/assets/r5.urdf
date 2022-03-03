@@ -154,7 +154,7 @@
     <parent link="link5" />
     <child link="tool" />
     <limit effort="30" velocity="1.0" lower="-6.28318" upper="6.28318" />
-    <origin xyz="0 0 0.15" rpy="0 -1.570795 3.141592" />
+    <origin xyz="0 0 0.1" rpy="0 -1.570795 3.141592" />
     <axis xyz="0 0 1" />
   </joint>
 </robot>

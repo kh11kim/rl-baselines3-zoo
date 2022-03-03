@@ -67,9 +67,9 @@ class BulletCollisionChecker:
         margin = 0.0
         distances = self.compute_distances(self.collision_check_list, 0)
         if (distances < margin).any():
-            idx = (np.array(distances < margin) == True)[0]
-            print(self.collision_check_list[idx][0].body_name, self.collision_check_list[idx][0].link_name)
-            print(self.collision_check_list[idx][1].body_name, self.collision_check_list[idx][1].link_name)
+            #idx = (np.array(distances < margin) == True)[0]
+            #print(self.collision_check_list[idx][0].body_name, self.collision_check_list[idx][0].link_name)
+            #print(self.collision_check_list[idx][1].body_name, self.collision_check_list[idx][1].link_name)
             return True
         return False
 
