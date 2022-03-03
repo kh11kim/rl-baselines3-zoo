@@ -35,7 +35,10 @@ python train.py --algo tqc --env PandaReachCspace-v0 -n 1000000 -i rl-trained-ag
 python train.py --algo tqc --env PandaReachCspace-v0 -n 1000000 --env-kwargs render:False reward_type:"'joint'" --save-replay-buffer
 python train.py --algo tqc --env PandaReachCspace-v0 -n 1000000 --env-kwargs render:False reward_type:"'jointaction'" --save-replay-buffer
 python train.py --algo sac --env PandaReachCspace-v0 -n 1000000 --env-kwargs render:False reward_type:"'jointaction'" --save-replay-buffer
+python train.py --algo tqc --env MyPandaReach-v0 -n 1000000 --env-kwargs render:False reward_type:"'pose'" --save-replay-buffer
 
+python train.py --algo sac --env RxbotReach-v0 -n 1000000 --env-kwargs render:False dim:2
+RxbotReach
 # hyperparam tuning
 python train.py --algo sac --env PandaReach-v0 -n 50000 -optimize --n-trials 1000 --n-jobs 2 --sampler tpe --pruner median
 
@@ -51,3 +54,7 @@ python enjoy.py --algo sac --env RxbotReach-v0 --folder rl-trained-agents/ -n 50
 python enjoy.py --algo tqc --env PandaReachPosOrn-v0 --folder rl-trained-agents/ -n 5000 --env-kwargs render:True --load-best
 python enjoy.py --algo tqc --env PandaReachCspace-v0 --folder rl-trained-agents/ -n 5000 --exp-id 5 --env-kwargs render:True
 python enjoy.py --algo tqc --env PandaReachCspace-v0 --folder rl-trained-agents/ -n 5000 --exp-id 26 --env-kwargs render:True
+python enjoy.py --algo tqc --env MyPandaReach-v0 --folder logs/ -n 5000 --exp-id 4 --env-kwargs render:True --load-best
+python train.py --algo sac --env RxbotReach-v0 -n 1000000 --env-kwargs render:False dim:2
+
+python enjoy.py --algo sac --env RxbotReach-v0 --folder logs/ -n 5000 --exp-id 24 --env-kwargs render:True dim:2 --load-best
