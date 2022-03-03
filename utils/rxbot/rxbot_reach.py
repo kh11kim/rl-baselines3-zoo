@@ -5,7 +5,7 @@ from gym.envs.registration import register
 
 from .rxbot import RxbotAbstractEnv
 
-class RxbotReachEnv(RxbotAbstractEnv, gym.GoalEnv):
+class RxbotReachEnv(RxbotAbstractEnv, gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self, render=False, dim=2, reward_type="task", random_init=True, task_ll=[0,-1,0], task_ul=[1,1,1], joint_range=2*np.pi):

@@ -14,13 +14,14 @@ from stable_baselines3.common.utils import set_random_seed
 import utils.import_envs  # noqa: F401 pytype: disable=import-error
 from utils.exp_manager import ExperimentManager
 from utils.utils import ALGOS, StoreDict
-import utils.rxbot.rxbot_reach
-import utils.rxbot.panda_reach
-from utils.rxbot.panda_reach_posorn import PandaReachEnvPosOrn
-from utils.rxbot.panda_reach_task import PandaReachTaskEnv
-from utils.rxbot.panda_collision import PandaCollisionEnv
-from utils.rxbot.panda_reach_cspace import PandaReachCspaceEnv
-from utils.rxbot.panda_reach_cspace2 import PandaReachCspaceEnv2
+# import utils.rxbot.rxbot_reach
+# import utils.rxbot.panda_reach
+# from utils.rxbot.panda_reach_posorn import PandaReachEnvPosOrn
+# from utils.rxbot.panda_reach_task import PandaReachTaskEnv
+# from utils.rxbot.panda_collision import PandaCollisionEnv
+# from utils.rxbot.panda_reach_cspace import PandaReachCspaceEnv
+# from utils.rxbot.panda_reach_cspace2 import PandaReachCspaceEnv2
+from pybullet_wrapper import *
 
 seaborn.set()
 

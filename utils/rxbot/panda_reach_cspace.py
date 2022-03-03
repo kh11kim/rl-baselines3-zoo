@@ -6,7 +6,7 @@ from gym.envs.registration import register
 
 from .franka_panda import PandaAbstractEnv
 
-class PandaReachCspaceEnv(PandaAbstractEnv, gym.GoalEnv):
+class PandaReachCspaceEnv(PandaAbstractEnv, gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self, render=False, reward_type="jointcol", random_init=True, task_ll=[-1,-1,0], task_ul=[1,1,1]):

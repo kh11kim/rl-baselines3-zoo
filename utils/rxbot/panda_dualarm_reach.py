@@ -5,7 +5,7 @@ from gym.envs.registration import register
 
 from .franka_panda_dualarm import PandaDualArmAbstractEnv
 
-class PandaDualArmReachEnv(PandaDualArmAbstractEnv, gym.GoalEnv):
+class PandaDualArmReachEnv(PandaDualArmAbstractEnv, gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self, render=False, reward_type="task", random_init=True, task_ll=[0,-1,0], task_ul=[1,1,1]):

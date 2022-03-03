@@ -1,0 +1,235 @@
+<?xml version="1.0"?>
+<robot name="snake">
+  <link name="base" />
+  <link name="link1">
+    <visual>
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.05 0.05 0.2"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.0 0.0 0.0 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.05 0.05 0.2"/>
+      </geometry>
+    </collision>    
+  </link>
+  <link name="link2">
+    <visual>
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.05 0.05 0.2"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.05 0.05 0.2"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="link3">
+    <visual>
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.05 0.05 0.2"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.0 0.0 0.0 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.05 0.05 0.2"/>
+      </geometry>
+    </collision>    
+  </link>
+  <link name="link4">
+    <visual>
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.05 0.05 0.2"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.05 0.05 0.2"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="link5">
+    <visual>
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.05 0.05 0.2"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.0 0.0 0.0 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.05 0.05 0.2"/>
+      </geometry>
+    </collision>    
+  </link>
+  <link name="link6">
+    <visual>
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.05 0.05 0.2"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.05 0.05 0.2"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="link7">
+    <visual>
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.05 0.05 0.2"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.0 0.0 0.0 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.05 0.05 0.2"/>
+      </geometry>
+    </collision>    
+  </link>
+  <link name="link8">
+    <visual>
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.05 0.05 0.2"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.05 0.05 0.2"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="link9">
+    <visual>
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.05 0.05 0.2"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.0 0.0 0.0 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.05 0.05 0.2"/>
+      </geometry>
+    </collision>    
+  </link>
+  <link name="link10">
+    <visual>
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.05 0.05 0.2"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.05 0.05 0.2"/>
+      </geometry>
+    </collision>
+  </link>
+  
+  
+  
+  <joint name="joint1" type="revolute">
+    <parent link="base" />
+    <child link="link1" />
+    <limit effort="30" velocity="1.0" lower="-1.570795" upper="1.570795" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <axis xyz="1 0 0" />
+  </joint>
+  <joint name="joint2" type="revolute">
+    <parent link="link1" />
+    <child link="link2" />
+    <limit effort="30" velocity="1.0" lower="-1.570795" upper="1.570795" />
+    <origin xyz="0 0 0.2" rpy="0 0 0" />
+    <axis xyz="1 0 0" />
+  </joint>
+  <joint name="joint3" type="revolute">
+    <parent link="link2" />
+    <child link="link3" />
+    <limit effort="30" velocity="1.0" lower="-1.570795" upper="1.570795" />
+    <origin xyz="0 0 0.2" rpy="0 0 0" />
+    <axis xyz="1 0 0" />
+  </joint>
+  <joint name="joint4" type="revolute">
+    <parent link="link3" />
+    <child link="link4" />
+    <limit effort="30" velocity="1.0" lower="-1.570795" upper="1.570795" />
+    <origin xyz="0 0 0.2" rpy="0 0 0" />
+    <axis xyz="1 0 0" />
+  </joint>
+  <joint name="joint5" type="revolute">
+    <parent link="link4" />
+    <child link="link5" />
+    <limit effort="30" velocity="1.0" lower="-1.570795" upper="1.570795" />
+    <origin xyz="0 0 0.2" rpy="0 0 0" />
+    <axis xyz="1 0 0" />
+  </joint>
+  <joint name="joint6" type="revolute">
+    <parent link="link5" />
+    <child link="link6" />
+    <limit effort="30" velocity="1.0" lower="-1.570795" upper="1.570795" />
+    <origin xyz="0 0 0.2" rpy="0 0 0" />
+    <axis xyz="1 0 0" />
+  </joint>
+  <joint name="joint7" type="revolute">
+    <parent link="link6" />
+    <child link="link7" />
+    <limit effort="30" velocity="1.0" lower="-1.570795" upper="1.570795" />
+    <origin xyz="0 0 0.2" rpy="0 0 0" />
+    <axis xyz="1 0 0" />
+  </joint>
+  <joint name="joint8" type="revolute">
+    <parent link="link7" />
+    <child link="link8" />
+    <limit effort="30" velocity="1.0" lower="-1.570795" upper="1.570795" />
+    <origin xyz="0 0 0.2" rpy="0 0 0" />
+    <axis xyz="1 0 0" />
+  </joint>
+  <joint name="joint9" type="revolute">
+    <parent link="link8" />
+    <child link="link9" />
+    <limit effort="30" velocity="1.0" lower="-1.570795" upper="1.570795" />
+    <origin xyz="0 0 0.2" rpy="0 0 0" />
+    <axis xyz="1 0 0" />
+  </joint>
+  <joint name="joint10" type="revolute">
+    <parent link="link9" />
+    <child link="link10" />
+    <limit effort="30" velocity="1.0" lower="-1.570795" upper="1.570795" />
+    <origin xyz="0 0 0.2" rpy="0 0 0" />
+    <axis xyz="1 0 0" />
+  </joint>
+
+  
+  
+  <link name="tool"></link>
+  
+  
+  <joint name="ee" type="fixed">
+    <parent link="link10" />
+    <child link="tool" />
+    <limit effort="30" velocity="1.0" lower="-6.28318" upper="6.28318" />
+    <origin xyz="0 0 0.2" rpy="0 -1.570795 3.141592" />
+    <axis xyz="0 0 1" />
+  </joint>
+</robot>

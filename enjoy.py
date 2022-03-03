@@ -13,12 +13,13 @@ import utils.import_envs  # noqa: F401 pylint: disable=unused-import
 from utils import ALGOS, create_test_env, get_latest_run_id, get_saved_hyperparams
 from utils.exp_manager import ExperimentManager
 from utils.utils import StoreDict
-import utils.rxbot.rxbot_reach
-import utils.rxbot.panda_reach
-from utils.rxbot.panda_reach_posorn import PandaReachEnvPosOrn
-from utils.rxbot.panda_reach_task import PandaReachTaskEnv
-from utils.rxbot.panda_reach_cspace import PandaReachCspaceEnv
-from utils.rxbot.panda_reach_cspace2 import PandaReachCspaceEnv2
+# import utils.rxbot.rxbot_reach
+# import utils.rxbot.panda_reach
+# from utils.rxbot.panda_reach_posorn import PandaReachEnvPosOrn
+# from utils.rxbot.panda_reach_task import PandaReachTaskEnv
+# from utils.rxbot.panda_reach_cspace import PandaReachCspaceEnv
+# from utils.rxbot.panda_reach_cspace2 import PandaReachCspaceEnv2
+from pybullet_wrapper import *
 
 def main():  # noqa: C901
     parser = argparse.ArgumentParser()

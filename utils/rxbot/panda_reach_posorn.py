@@ -5,7 +5,7 @@ from gym.envs.registration import register
 from spatial_math_mini import SO3
 from .franka_panda import PandaAbstractEnv
 
-class PandaReachEnvPosOrn(PandaAbstractEnv, gym.GoalEnv):
+class PandaReachEnvPosOrn(PandaAbstractEnv, gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self, render=False, reward_type="posorn", random_init=True, task_ll=[0.1,-1,0, -1,-1,-1,-1], task_ul=[1,1,1,1,1,1,1]):
